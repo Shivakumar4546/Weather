@@ -88,7 +88,11 @@ export const fetchWeatherByCoords = async (lat: number, lon: number): Promise<We
   }
 };
 
-const transformWeatherData = (current: OpenWeatherCurrent, forecast: OpenWeatherForecast): WeatherData => {
+const transformWeatherData = (
+  current: OpenWeatherCurrent,
+  forecast: OpenWeatherForecast
+): WeatherData => {
+
   const location: Location = {
     name: current.name,
     country: current.sys.country,
@@ -113,28 +117,31 @@ const transformWeatherData = (current: OpenWeatherCurrent, forecast: OpenWeather
     dt: current.dt,
   };
 
-  // Get next 12 hours using interpolated 1-hour forecast
-  const hourlyData: HourlyWeather[] = interpolateHourlyForecast(forecast.list, 12);
+  // Hourly (same as before)
+  const hourlyData: HourlyWeather[] = interpolateHourlyForecast(
+    forecast.list,
+    12
+  );
 
-  // Get daily forecast (group by day)
-  const dailyMap = new Map<number, DailyWeather>();
-  
+  // ✅ FIXED DAILY GROUPING
+  const dailyMap = new Map<string, DailyWeather>();
+
   forecast.list.forEach((item) => {
     const date = new Date(item.dt * 1000);
-    const dayStart = Math.floor(date.getTime() / 86400000) * 86400;
-    
-    if (!dailyMap.has(dayStart)) {
-      dailyMap.set(dayStart, {
-        dt: dayStart / 1000,
+    const dayKey = date.toISOString().split("T")[0]; // YYYY-MM-DD
+
+    if (!dailyMap.has(dayKey)) {
+      dailyMap.set(dayKey, {
+        dt: item.dt,
         tempMax: item.main.temp,
         tempMin: item.main.temp,
-        icon: item.weather[0]?.icon || '01d',
-        condition: item.weather[0]?.main || 'Clear',
-        precipitation: item.pop * 100,
+        icon: item.weather[0]?.icon || "01d",
+        condition: item.weather[0]?.main || "Clear",
+        precipitation: (item.pop ?? 0) * 100,
         humidity: item.main.humidity,
       });
     } else {
-      const existing = dailyMap.get(dayStart)!;
+      const existing = dailyMap.get(dayKey)!;
       existing.tempMax = Math.max(existing.tempMax, item.main.temp);
       existing.tempMin = Math.min(existing.tempMin, item.main.temp);
     }
