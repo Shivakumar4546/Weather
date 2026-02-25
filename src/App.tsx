@@ -1,9 +1,9 @@
-import { useEffect} from 'react';
+import { useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { CurrentWeather } from './components/CurrentWeather';
 import { WeatherDetails } from './components/WeatherDetails';
 import { HourlyForecast } from './components/HourlyForecast';
-import { DailyForecast } from './components/DailyForecast';
+import DailyForecast from './components/DailyForecast';
 import { TemperatureChart } from './components/TemperatureChart';
 import { RecentSearches } from './components/RecentSearches';
 import { LoadingSpinner } from './components/LoadingSpinner';
@@ -96,7 +96,7 @@ function App() {
               </div>
 
               <div className="space-y-6">
-                <DailyForecast daily={data.daily} />
+                <DailyForecast forecast={data.daily} />
                 <WeatherDetails weather={data.current} />
               </div>
             </div>
