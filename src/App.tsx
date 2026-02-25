@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect} from 'react';
 import { Header } from './components/Header';
 import { CurrentWeather } from './components/CurrentWeather';
 import { WeatherDetails } from './components/WeatherDetails';

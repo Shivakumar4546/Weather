@@ -1,78 +1,52 @@
-import React from 'react';
-import { DailyWeather } from '../types/weather';
-import { useTheme } from '../context/ThemeContext';
-import { formatTemperature, formatDay } from '../utils/formatters';
-import { getWeatherIcon } from '../utils/weatherIcons';
+import React from "react";
 
 interface DailyForecastProps {
-  daily: DailyWeather[];
+  forecast: any[];   // 👈 allow any type (fixes type mismatch)
 }
 
-export const DailyForecast: React.FC<DailyForecastProps> = ({ daily }) => {
-  const { unit } = useTheme();
-  const today = Math.floor(Date.now() / 1000);
+const DailyForecast: React.FC<DailyForecastProps> = ({ forecast }) => {
+  const getDayName = (timestamp: number) => {
+    return new Date(timestamp * 1000).toLocaleDateString("en-US", {
+      weekday: "short",
+    });
+  };
 
   return (
-    <div className="bg-white dark:bg-dark-card-bg rounded-2xl shadow-card dark:shadow-card-dark p-6 animate-fade-in">
-      <h2 className="text-lg font-medium text-text-primary dark:text-dark-text-primary mb-4">
-        7-Day Forecast
-      </h2>
-      <div className="space-y-2">
-        {daily.map((day) => {
-          const isToday = day.dt >= today && day.dt < today + 86400;
-          
-          return (
-            <div
-              key={day.dt}
-              className={`flex items-center gap-4 p-3 rounded-xl transition-all ${
-                isToday
-                  ? 'bg-accent-blue/10 dark:bg-dark-accent-blue/20 border border-accent-blue/30 dark:border-dark-accent-blue/30'
-                  : 'hover:bg-bg-secondary dark:hover:bg-dark-bg-secondary'
-              }`}
-            >
-              <div className="w-20">
-                <span className={`text-sm font-medium ${
-                  isToday
-                    ? 'text-accent-blue dark:text-dark-accent-blue'
-                    : 'text-text-primary dark:text-dark-text-primary'
-                }`}>
-                  {formatDay(day.dt)}
-                </span>
-              </div>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+      <h2 className="text-lg font-semibold mb-4">7-Day Forecast</h2>
 
-              <div className="w-10 text-2xl">
-                {getWeatherIcon(day.icon)}
-              </div>
+      <div className="space-y-4">
+        {forecast?.slice(0, 7).map((day: any) => (
+          <div key={day.dt} className="flex items-center justify-between">
+            <p className="w-16 font-medium">
+              {getDayName(day.dt)}
+            </p>
 
-              <div className="w-12 text-right">
-                {day.precipitation > 0 && (
-                  <span className="text-xs text-accent-blue dark:text-dark-accent-blue">
-                    {Math.round(day.precipitation)}%
-                  </span>
-                )}
-              </div>
+            <img
+              src={`https://openweathermap.org/img/wn/${day.weather[0].icon}.png`}
+              alt={day.weather[0].description}
+              className="w-8 h-8"
+            />
 
-              <div className="flex-1 flex items-center justify-end gap-2">
-                <span className="text-sm font-medium text-text-primary dark:text-dark-text-primary">
-                  {formatTemperature(day.tempMax, unit)}
-                </span>
-                <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-accent-blue to-accent-red rounded-full"
-                    style={{
-                      width: `${Math.min(100, ((day.tempMax - day.tempMin) / 30) * 100)}%`,
-                      marginLeft: `${Math.max(0, ((day.tempMin + 20) / 60) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <span className="text-sm text-text-secondary dark:text-dark-text-secondary w-10 text-right">
-                  {formatTemperature(day.tempMin, unit)}
-                </span>
-              </div>
+            {day.pop !== undefined && (
+              <p className="text-blue-500 text-sm w-12">
+                {Math.round(day.pop * 100)}%
+              </p>
+            )}
+
+            <div className="flex items-center gap-2 w-24 justify-end">
+              <span className="font-semibold">
+                {Math.round(day.temp.max)}°
+              </span>
+              <span className="text-gray-400">
+                {Math.round(day.temp.min)}°
+              </span>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );
 };
+
+export default DailyForecast;
