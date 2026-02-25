@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect} from 'react';
 import { debounce } from '../utils/formatters';
 import { searchLocations, GeoLocation } from '../services/geocoding';
 
