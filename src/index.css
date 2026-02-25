@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Google Sans', 'Product Sans', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-bg-secondary dark:bg-dark-bg-secondary text-text-primary dark:text-dark-text-primary;
+  }
+
+  * {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+@layer utilities {
+  .backdrop-blur-glass {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar for the entire page */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #DADCE0 transparent;
+}
+
+html.dark {
+  scrollbar-color: #5F6368 transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #DADCE0;
+  border-radius: 4px;
+}
+
+html.dark::-webkit-scrollbar-thumb {
+  background-color: #5F6368;
+}
+
+/* Focus styles */
+*:focus-visible {
+  @apply outline-none ring-2 ring-accent-blue dark:ring-dark-accent-blue ring-offset-2 ring-offset-white dark:ring-offset-dark-bg-primary;
+}
+
+/* Selection styles */
+::selection {
+  @apply bg-accent-blue/30 text-text-primary;
+}
+
+html.dark ::selection {
+  @apply bg-dark-accent-blue/30 text-dark-text-primary;
+}
